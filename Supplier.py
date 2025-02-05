@@ -91,7 +91,7 @@ class Supplier:
     # Полная версия объекта
     @property
     def full_version(self):
-        return (f"Supplier(supplier_id={self.get_supplier_id()}, name={self.get_name()}, "
+        return (f"Supplier(supplier_id{self.get_supplier_id()}, name={self.get_name()}, "
                 f"address={self.get_address()}, phone={self.get_phone()}, ogrn={self.get_ogrn()})")
     
     # Краткая версия объекта
