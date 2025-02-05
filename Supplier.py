@@ -1,11 +1,27 @@
 import re
+import json
 class Supplier:
+
     def __init__(self, supplier_id, name, address, phone, ogrn):
         self.set_supplier_id(supplier_id)
         self.set_name(name)
         self.set_address(address)
         self.set_phone(phone)
         self.set_ogrn(ogrn)
+
+    @classmethod
+    def from_json(cls, data_json):
+        try:
+            data = json.loads(data_json)
+            return cls(
+                supplier_id=data["supplier_id"],
+                name=data["name"],
+                address=data["address"],
+                phone=data["phone"],
+                ogrn=data["ogrn"]
+            )
+        except (KeyError, json.JSONDecodeError) as e:
+            raise ValueError(f"Ошибка при разборе JSON: {e}")
 
     # Getters
     def get_supplier_id(self):
@@ -53,16 +69,20 @@ class Supplier:
     @staticmethod
     def validate_id(supplier_id):
         return isinstance(supplier_id, int) and supplier_id > 0
+    
     @staticmethod
     def validate_name(name):
         return isinstance(name, str) and bool(name.strip())
+    
     @staticmethod
     def validate_address(address):
         return isinstance(address, str) and len(address.strip()) >= 5
+    
     @staticmethod
     def validate_phone(phone):
         pattern = r'^\+?\d{7,15}$'  # Номер телефона: от 7 до 15 цифр с возможным "+" в начале
         return isinstance(phone, str) and re.fullmatch(pattern, phone)
+    
     @staticmethod
     def validate_ogrn(ogrn):
         return isinstance(ogrn, str) and len(ogrn) == 13 and ogrn.isdigit()
