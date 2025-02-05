@@ -1,5 +1,6 @@
 import re
 import json
+
 class Supplier:
 
     def __init__(self, supplier_id, name, address, phone, ogrn):
@@ -87,3 +88,26 @@ class Supplier:
     def validate_ogrn(ogrn):
         return isinstance(ogrn, str) and len(ogrn) == 13 and ogrn.isdigit()
     
+    # Полная версия объекта
+    @property
+    def full_version(self):
+        return (f"Supplier(supplier_id={self.get_supplier_id()}, name={self.get_name()}, "
+                f"address={self.get_address()}, phone={self.get_phone()}, ogrn={self.get_ogrn()})")
+    
+    # Краткая версия объекта
+    @property
+    def short_version(self):
+        return f"Supplier({self.get_name()} {self.get_ogrn()})"
+    
+    # Сравнение объектов на равенство
+    def __eq__(self, other):
+        if isinstance(other, Supplier):
+            return (self.get_supplier_id() == other.get_supplier_id() and
+                    self.get_name() == other.get_name() and
+                    self.get_address() == other.get_address() and
+                    self.get_phone() == other.get_phone() and 
+                    self.get_ogrn() == other.get_ogrn())
+        return False
+
+
+
