@@ -1,25 +1,20 @@
 import psycopg2
 import uuid
+from DBconnection import DBconnection
+
 class SupplierRepDB:
     
     def __init__(self, db_config):
-        self.connection = psycopg2.connect(
-            dbname=db_config['dbname'],
-            user=db_config['user'],
-            password=db_config['password'],
-            host=db_config['host'],
-            port=db_config['port']
-        )
-        self.connection.autocommit = True
+        self.db = DBconnection(db_config)
     
     def get_by_id(self, supplier_id):
-        with self.connection.cursor() as cursor:
+        with self.db.get_cursor() as cursor:
             cursor.execute("SELECT * FROM supplier WHERE id = %s", (supplier_id,))
             result = cursor.fetchone()
         return result
     
     def get_k_n_short_list(self, k, n):
-        with self.connection.cursor() as cursor:
+        with self.db.get_cursor() as cursor:
             offset = k * (n - 1)
             cursor.execute("""
                 SELECT id, name, phone, ogrn FROM supplier
@@ -30,7 +25,7 @@ class SupplierRepDB:
     
     def add(self, name, address, phone, ogrn):
         new_id = str(uuid.uuid4())
-        with self.connection.cursor() as cursor:
+        with self.db.get_cursor() as cursor:
             cursor.execute("""
                 INSERT INTO supplier (id, name, address, phone, ogrn)
                 VALUES (%s, %s, %s, %s, %s)
@@ -53,7 +48,7 @@ class SupplierRepDB:
             fields.append("ogrn = %s")
             values.append(ogrn)
         values.append(supplier_id)
-        with self.connection.cursor() as cursor:
+        with self.db.get_cursor() as cursor:
             cursor.execute(f"""
                 UPDATE supplier
                 SET {', '.join(fields)}
@@ -61,10 +56,10 @@ class SupplierRepDB:
             """, tuple(values))
     
     def delete_by_id(self, supplier_id):
-        with self.connection.cursor() as cursor:
+        with self.db.get_cursor() as cursor:
             cursor.execute("DELETE FROM supplier WHERE id = %s", (supplier_id,))
     def get_count(self):
-        with self.connection.cursor() as cursor:
+        with self.db.get_cursor() as cursor:
             cursor.execute("SELECT COUNT(*) FROM supplier")
             result = cursor.fetchone()
         return result[0]
