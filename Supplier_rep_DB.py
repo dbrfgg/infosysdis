@@ -65,3 +65,42 @@ class SupplierRepDB:
         return result[0]
     
 
+db_config = {
+    "dbname": "supplier",
+    "user": "postgres",
+    "password": "1234",
+    "host": "localhost",
+    "port": "5432"
+}
+
+def main():
+    repo = SupplierRepDB(db_config)
+    
+    # 1. Добавление записи
+    new_id = repo.add("Supplier 1", "Address 1", "12345", "OGRN1")
+    print(f"Добавлен поставщик с ID: {new_id}")
+
+    # 2. Получение всех записей
+    print("Количество поставщиков:", repo.get_count())
+
+    # 3. Получение записи по ID
+    supplier = repo.get_by_id(new_id)
+    print("Найден поставщик по ID:", supplier)
+
+    # 4. Получение части списка
+    short_list = repo.get_k_n_short_list(1, 1)
+    print("Первая страница поставщиков:", short_list)
+
+    # 5. Обновление записи
+    repo.update_by_id(new_id, name="Updated Supplier", phone="98765")
+    updated_supplier = repo.get_by_id(new_id)
+    print("Обновленный поставщик:", updated_supplier)
+
+    # 6. Удаление записи
+    repo.delete_by_id(new_id)
+    print("Поставщик удален. Новое количество поставщиков:", repo.get_count())
+
+if __name__ == "__main__":
+    main()
+    
+
